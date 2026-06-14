@@ -1,4 +1,5 @@
 const express = require("express");
+const axios = require("axios");
 
 const app = express();
 app.use(express.json());
@@ -19,18 +20,14 @@ app.post("/player-joined", async (req, res) => {
 
         console.log("Player joined:", player);
 
-        await fetch(DISCORD_WEBHOOK_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                content: `🟢 ${player} joined the game`
-            })
+        await axios.post(DISCORD_WEBHOOK_URL, {
+            content: `🟢 ${player} joined the game`
         });
 
         res.json({ success: true });
 
     } catch (err) {
-        console.error(err);
+        console.error("Error:", err.message);
         res.status(500).json({ error: "error" });
     }
 });
