@@ -1,17 +1,33 @@
 const express = require("express");
+const fetch = require("node-fetch");
 
 const app = express();
-
 app.use(express.json());
 
-app.post("/player-joined", (req, res) => {
-    console.log("Player joined:", req.body);
+const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
 
-    res.json({
-        success: true
+app.post("/player-joined", async (req, res) => {
+    const player = req.body.player;
+
+    if (!player) {
+        return res.status(400).json({ error: "No player provided" });
+    }
+
+    console.log("Player joined:", player);
+
+    await fetch(DISCORD_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            content: `🟢 ${player} joined the game`
+        })
     });
+
+    res.json({ success: true });
 });
 
-app.listen(3000, () => {
-    console.log("Server running on port 3000");
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log("Server running on port", PORT);
 });
