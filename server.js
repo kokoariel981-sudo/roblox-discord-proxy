@@ -1,4 +1,5 @@
 const express = require("express");
+const axios = require("axios");
 
 const app = express();
 app.use(express.json());
@@ -19,12 +20,41 @@ app.post("/player-joined", async (req, res) => {
 
         console.log("Player joined:", player);
 
-        await fetch(DISCORD_WEBHOOK_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                content: `🟢 ${player} joined the game`
-            })
+        await axios.post(DISCORD_WEBHOOK_URL, {
+            username: "Roblox Tracker",
+            avatar_url: "https://i.imgur.com/4M34hi2.png",
+            embeds: [
+                {
+                    author: {
+                        name: "Roblox Server Monitor",
+                        icon_url: "https://i.imgur.com/4M34hi2.png"
+                    },
+
+                    title: "Player Joined",
+                    color: 0x2ecc71,
+
+                    description: `**${player}** just joined the game`,
+
+                    fields: [
+                        {
+                            name: "Event",
+                            value: "Join",
+                            inline: true
+                        },
+                        {
+                            name: "Player",
+                            value: player,
+                            inline: true
+                        }
+                    ],
+
+                    footer: {
+                        text: "Roblox Live Tracker"
+                    },
+
+                    timestamp: new Date().toISOString()
+                }
+            ]
         });
 
         res.json({ success: true });
