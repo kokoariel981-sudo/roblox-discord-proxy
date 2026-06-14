@@ -5,9 +5,8 @@ app.use(express.json());
 
 const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
 
-// test route (VERY IMPORTANT for debugging)
 app.get("/", (req, res) => {
-    res.send("Server is alive ✅");
+    res.send("OK");
 });
 
 app.post("/player-joined", async (req, res) => {
@@ -20,26 +19,19 @@ app.post("/player-joined", async (req, res) => {
 
         console.log("Player joined:", player);
 
-        // Node 22 built-in fetch (NO imports needed)
-        const response = await fetch(DISCORD_WEBHOOK_URL, {
+        await fetch(DISCORD_WEBHOOK_URL, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 content: `🟢 ${player} joined the game`
             })
         });
 
-        if (!response.ok) {
-            console.error("Discord webhook failed:", await response.text());
-        }
-
         res.json({ success: true });
 
     } catch (err) {
-        console.error("Server error:", err);
-        res.status(500).json({ error: "Internal error" });
+        console.error(err);
+        res.status(500).json({ error: "error" });
     }
 });
 
