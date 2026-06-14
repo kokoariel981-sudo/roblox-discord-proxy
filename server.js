@@ -14,9 +14,7 @@ app.post("/player-joined", async (req, res) => {
     try {
         const player = req.body.player;
 
-        if (!player) {
-            return res.status(400).json({ error: "No player provided" });
-        }
+        if (!player) return res.status(400).json({ error: "No player" });
 
         console.log("Player joined:", player);
 
@@ -27,7 +25,7 @@ app.post("/player-joined", async (req, res) => {
         res.json({ success: true });
 
     } catch (err) {
-        console.error("Error:", err.message);
+        console.error(err);
         res.status(500).json({ error: "error" });
     }
 });
